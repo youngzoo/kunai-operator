@@ -1,0 +1,89 @@
+nameOverride: ""
+fullnameOverride: ""
+namespace: kunai
+
+operator:
+  image:
+    repository: yeongjukang/kunai-operator
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  serviceAccount:
+    create: true
+    
+daemonset:
+  image:
+    repository: yeongjukang/kunai
+    tag: latest
+    pullPolicy: IfNotPresent
+  nodeSelector: null
+  tolerations: null
+  affinity: null
+  config: |- 
+    max_buffered_events: 1024
+    max_eps_fs: 2048
+    workers: null
+    send_data_min_len: null
+    harden: false
+    output:
+      path: /dev/stdout
+      rotate_size: null
+      max_size: null
+      buffered: false
+    scanner:
+      rules: []
+      iocs: []
+      yara: []
+      min_severity: 0
+      show_positive_file_scan: true
+    events:
+      execve:
+        enable: true
+      execve_script:
+        enable: true
+      exit:
+        enable: true
+      exit_group:
+        enable: true
+      clone:
+        enable: true
+      prctl:
+        enable: true
+      kill:
+        enable: true
+      ptrace:
+        enable: true
+      init_module:
+        enable: true
+      bpf_prog_load:
+        enable: true
+      bpf_socket_filter:
+        enable: true
+      mprotect_exec:
+        enable: true
+      mmap_exec:
+        enable: true
+      connect:
+        enable: true
+      dns_query:
+        enable: true
+      send_data:
+        enable: true
+      read:
+        enable: false
+      read_config:
+        enable: true
+      write:
+        enable: false
+      write_config:
+        enable: true
+      file_rename:
+        enable: true
+      file_unlink:
+        enable: true
+      write_close:
+        enable: false
+      file_create:
+        enable: true
+      file_scan:
+        enable: true

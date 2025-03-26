@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Release.Name }}
+    spec:
+      {{- if .Values.daemonset.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.daemonset.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.daemonset.tolerations }}
+      tolerations:
+        {{- toYaml .Values.daemonset.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.daemonset.affinity }}
+      affinity:
+        {{- toYaml .Values.daemonset.affinity | nindent 8 }}
+      {{- end }}
+      hostPID: true
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.daemonset.image.repository }}:{{ .Values.daemonset.image.tag }}
+        imagePullPolicy: {{ .Values.daemonset.image.pullPolicy }}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: machine-id
+          mountPath: /etc/machine-id
+          readOnly: true
+        - name: containerd-socket
+          mountPath: /var/run/containerd/containerd.sock
+          readOnly: true
+        - name: podman-socket
+          mountPath: /var/run/podman/podman.sock
+          readOnly: true
+        - name: {{ .Release.Name }}-config
+          mountPath: /etc/kunai
+          readOnly: true
+        command: ["/kunai"]
+        args: ["run", "--config", "/etc/kunai/config.yaml"]
+      volumes:
+      - name: machine-id
+        hostPath:
+          path: /etc/machine-id
+      - name: containerd-socket
+        hostPath:
+          path: /var/run/containerd/containerd.sock
+      - name: podman-socket
+        hostPath:
+          path: /var/run/podman/podman.sock
+      - name: {{ .Release.Name }}-config
+        configMap:
+          name: {{ .Release.Name }}-config
+          items:
+          - key: config.yaml
+            path: config.yaml

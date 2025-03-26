@@ -1,0 +1,1 @@
+Kunai operator has been successfully installed in the {{ .Release.Namespace }} namespace.

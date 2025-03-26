@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-operator
+  namespace: {{ .Release.namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: {{ .Release.Name }}-operator
+  template:
+    metadata:
+      labels:
+        name: {{ .Release.Name }}-operator
+    spec:
+      serviceAccountName: {{ .Release.Name }}-operator-sa
+      containers:
+      - name: {{ .Release.Name }}-operator
+        image: {{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}
+        imagePullPolicy: {{ .Values.daemonset.image.pullPolicy }}
+        env:
+        - name: RELEASE_NAME
+          value: {{ .Release.Name }}

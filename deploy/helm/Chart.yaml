@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kunai-operator-chart
+description: A Helm chart for Kunai Operator
+type: application
+version: "v0.1.0"
+appVersion: "v0.5.4"

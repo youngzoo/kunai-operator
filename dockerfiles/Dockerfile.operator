@@ -1,0 +1,10 @@
+FROM golang:1.24-alpine AS builder
+WORKDIR /kunai-operator
+COPY . .
+RUN go mod download
+RUN go build -o kunai-operator cmd/kunai-operator/main.go 
+
+FROM gcr.io/distroless/static-debian12
+WORKDIR /app
+COPY --from=builder /kunai-operator/kunai-operator .
+ENTRYPOINT ["/app/kunai-operator"]

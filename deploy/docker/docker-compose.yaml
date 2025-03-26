@@ -1,0 +1,13 @@
+services:
+  kunai:
+    build:
+      context: ../../
+      dockerfile: dockerfiles/Dockerfile.daemonset
+    container_name: kunai
+    privileged: true
+    entrypoint: /kunai
+    volumes:
+      - /etc/machine-id:/etc/machine-id:ro
+      - /proc:/proc
+      - /var/run/containerd/containerd.sock:/var/run/containerd/containerd.sock:ro
+      - /var/run/podman/podman.sock:/var/run/podman/podman.sock:ro
